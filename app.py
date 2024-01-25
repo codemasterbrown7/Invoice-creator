@@ -26,7 +26,7 @@ mileage_rate = 0.30
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('index.html')
 
 @app.route('/create-invoice', methods=['GET', 'POST'])
 def create_invoice():
