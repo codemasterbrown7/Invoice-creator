@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Meetings</title>
+    <!-- Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Log Meetings for Families</h1>
+        {% set grand_total = namespace(value=0) %}
+        {% for i in range(1, num_families + 1) %}
+            {% set family_info = fws_tasks.get(i|string) %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2 class="h5">{{ family_info.name if family_info and family_info.name else 'Family ' ~ i }}</h2>
+                </div>
+                <div class="card-body">
+                    {% if family_info and family_info.meetings %}
+                        {% for meeting in family_info.meetings %}
+                            <h5>Meeting Date: {{ meeting.date }}</h5>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Value</th>
+                                        <th>Rate</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <form action="{{ url_for('remove_meeting', family_id=i, meeting_index=loop.index0) }}" method="post">
+                                    <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                </form>
+                                <tbody>
+                                    {% set meeting_total = namespace(value=0) %}
+                                    {% for task, details in meeting.items() %}
+                                        {% if task != 'date' %} <!-- Exclude the date from iteration -->
+                                            <tr>
+                                                <td>{{ task }}</td>
+                                                <td>{{ details.value }}</td>
+                                                <td>{{ details.rate }}</td>
+                                                <td>{{ '{:0.2f}'.format(details.total) }}</td>
+                                            </tr>
+                                            {% set meeting_total.value = meeting_total.value + details.total %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="3"><strong>Total for Meeting</strong></td>
+                                        <td><strong>{{'{:0.2f}'.format(meeting_total.value) }}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            {% set grand_total.value = grand_total.value + meeting_total.value %}
+                        {% endfor %}
+                    {% endif %}
+                    <form action="{{ url_for('meeting_logger', family_id=i) }}" method="get">
+                        <button class="btn btn-primary" type="submit">Log new meeting for {{ family_info.name if family_info and family_info.name else 'Family ' ~ i }}</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="mt-4">
+            <h2>Grand Total: {{ '{:0.2f}'.format(grand_total.value) }}</h2>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('export-to-excel') }}" class="btn btn-success">Export to Excel</a>
+        </div>
+    </div>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

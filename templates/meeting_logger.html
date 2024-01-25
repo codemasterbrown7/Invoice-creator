@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FWS Hours Logger</title>
+    <!-- Bootstrap CSS for styling (optional) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>FWS Hours Logger</h1>
+
+        <!-- Form for Data Input -->
+        <form id="dataForm" action="{{ url_for('meeting_logger', family_id=family_id) }}" method="post">
+            {% if not family_name %}
+            <div class="form-group">
+                <label for="familyNameInput">Family's Full Name:</label>
+                <input type="text" class="form-control" id="familyNameInput" name="family_name" placeholder="Enter family's full name" required>
+            </div>
+            {% endif %}
+            <!-- Date Selection -->
+            <div class="form-group">
+                <label for="dateInput">Date:</label>
+                <input type="date" class="form-control" id="dateInput" name="dateInput" required>
+            </div>
+
+            <!-- Supervised Contact Hours Input -->
+            <div class="form-group">
+                <label for="supervisedContactHours">Enter Supervised Contact Hours:</label>
+                <input type="number" class="form-control" id="supervisedContactHours" name="supervisedContactHours" placeholder="Enter hours" step="0.01" required>
+            </div>
+
+            <!-- Contact Report Hours Input -->
+            <div class="form-group">
+                <label for="contactReportHours">Enter Contact Report Hours:</label>
+                <input type="number" class="form-control" id="contactReportHours" name="contactReportHours" placeholder="Enter hours" step="0.01">
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input" id="clientLate" name="clientLate">
+                    <label class="form-check-label" for="clientLate">Client Late</label>
+                </div>
+            </div>
+
+            <!-- Travel Time Hours Input -->
+            <div class="form-group">
+                <label for="travelTimeHours">Enter Travel Time Hours:</label>
+                <input type="number" class="form-control" id="travelTimeHours" name="travelTimeHours" placeholder="Enter hours" step="0.01">
+            </div>
+
+            <!-- Mileage Section -->
+            <div class="form-group">
+                <label for="addresses">Addresses for Mileage Calculation:</label>
+                <div id="addressInputs" class="mb-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="addresses[]" placeholder="From Address">
+                        <input type="text" class="form-control" name="addresses[]" placeholder="To Address">
+                    </div>
+                </div>
+                <button class="btn btn-outline-secondary" type="button" id="addAddressBtn">+ Add Address</button>
+            </div>
+            <!-- Admin Pre Confirmation Checkbox -->
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="adminPreConfirmation" name="adminPreConfirmation">
+                <label class="form-check-label" for="adminPreConfirmation">Admin Pre Confirmation</label>
+            </div>
+
+            <!-- Admin New Case Checkbox -->
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="adminNewCase" name="adminNewCase">
+                <label class="form-check-label" for="adminNewCase">Admin New Case</label>
+            </div>
+
+            <!-- Miscellaneous Expenses Inputs -->
+            <div class="form-group">
+                <label for="miscellaneousDescription">Miscellaneous Description:</label>
+                <input type="text" class="form-control" id="miscellaneousDescription" name="miscellaneousDescription">
+            </div>
+            <div class="form-group">
+                <label for="miscellaneousCost">Miscellaneous Cost:</label>
+                <input type="number" class="form-control" id="miscellaneousCost" name="miscellaneousCost" placeholder="Enter cost" step="0.01">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <!-- Placeholder for Results -->
+        <div id="results" class="mt-4">
+            <!-- Results will be displayed here after calculation -->
+            <p>Total Invoice Amount: $0</p>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        console.log("Inline script is working");
+      </script>
+</body>
